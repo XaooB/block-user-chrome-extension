@@ -1,0 +1,27 @@
+{
+  "name": "Realmadrid.pl - Blokowanie użytkowników",
+  "manifest_version": 2,
+  "content_security_policy": "script-src 'self'; object-src 'self'",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "version": "1.0.0",
+  "icons": {
+    "16": "resources/icon_16.png",
+    "48": "resources/icon_48.png",
+    "128": "resources/icon_128.png"
+  },
+  "description": "Wtyczka pozwala na blokowanie komentarzy innych użytkowników. Po dodaniu nazwy, komentarz przestaje być widoczny.",
+  "browser_action": {
+    "default_icon": "resources/icon_128.png",
+    "default_popup": "popup.html",
+    "default_title": "Zablokuj użytkownika"
+  },
+  "content_scripts": [
+        {
+            "matches": ["http://www.realmadryt.pl/index.php?co=aktualnosci&id=*"],
+            "js": ["content.js"]
+        }
+    ]
+}

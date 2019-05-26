@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pl" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Zablokuj użytkownika na realmadryt.pl</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class='settings'>Ustawienia</div>
+    <div id='container'>
+      <h2 class='title'>Podaj nazwę użytkownika</h2>
+      <span class='subtitle'>W przypadku większej liczby oddziel przecinkiem — user1, user2, user3...</span>
+      <form class="user_block_list" id='user_block_list' name='user_block_list'>
+        <input name="user_name" placeholder="Wpisz nazwę użytkownika" />
+        <button>Dodaj użytkownika</button>
+      </form>
+      <section class='blocked_list'>
+        <p class='subtitle'>Lista aktualnie zablokowanych użytkowników:</p>
+        <ul id='blocked_users'></ul>
+      </section>
+    </div>
+    <script src="popup.js" charset="utf-8"></script>
+  </body>
+</html>
