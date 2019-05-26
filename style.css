@@ -16,7 +16,9 @@
   padding:12px 0;
   text-align: center;
   color:#fff;
-  background:#ee324e;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  background:rgb(0, 82, 159);
   margin-bottom:20px;
 }
 
@@ -38,19 +40,19 @@ form {
 form input {
   outline:none;
   width:100%;
-  border:1px solid #ee324e;
+  border:1px solid rgb(0, 82, 159);
   border-radius:6px;
-  padding:10px;
+  padding:8px;
 }
 
 form button {
   width:100%;
   cursor: pointer;
-  background:#ee324e;
+  background:rgb(0, 82, 159);
   border:none;
   margin-top:10px;
   border-radius:6px;
-  padding:8px 0;
+  padding:10px;
   color:#fff;
 }
 
@@ -77,6 +79,6 @@ form button {
 
 .delete_user {
   cursor:pointer;
-  color:#ee324e;
+  color:rgb(0, 82, 159);
   font-weight:bold;
 }
