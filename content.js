@@ -1,30 +1,37 @@
 (function() {
   const commentsNodes = document.querySelectorAll('#komentarze dl');
-  const blockedUsers =  localStorage.getItem('blockedUsers');
+  let blockedUsers = localStorage.getItem('blockedUsers');
 
-  if(blockedUsers === null) return;
-  let blockedUsersArray = blockedUsers.split(',');
-  if(blockedUsersArray.length) {
+  if(blockedUsers === null)
+    localStorage.setItem('blockedUsers', '');
 
-  //hide comments
+    blockedUsers = localStorage.getItem('blockedUsers');
+
+  if(blockedUsers.length) {
+    let blockedUsersArray = blockedUsers.split(',');
+    //hide comments
     for (let i = 0; i < commentsNodes.length; i++) {
       for (let j = 0; j < blockedUsersArray.length; j++) {
         if(commentsNodes[i].children[0].innerHTML.toLowerCase().indexOf(blockedUsersArray[j].trim()) !== -1)
-          commentsNodes[i].style.display = 'none';
+        commentsNodes[i].style.display = 'none';
       }
     }
   }
 
+
   chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     const commentsNodes = document.querySelectorAll('#komentarze dl');
+
     localStorage.setItem('blockedUsers', request);
 
+    //wali błędem, bo to jest puste
     const blockedUsersArray = localStorage.getItem('blockedUsers').split(',');
 
     //otherwise send list back
     sendResponse({error: false, usersList: blockedUsersArray})
 
-    if(blockedUsersArray.length) {
+    //if theres no users to block blockedUsersArray[0] gonna be "".
+    if(blockedUsersArray[0].length > 1) {
     //hide comments
       for (let i = 0; i < commentsNodes.length; i++) {
         for (let j = 0; j < blockedUsersArray.length; j++) {
