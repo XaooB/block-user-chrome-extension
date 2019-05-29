@@ -1,30 +1,49 @@
 document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('button').addEventListener('click', addUser, false);
+  document.querySelector('#reset').addEventListener('click', resetList, false);
   document.querySelector('form').addEventListener('submit', e => e.preventDefault(), false);
   const blockedUsersContainer = document.querySelector('#blocked_users');
   let blockedUsersFromStorage = localStorage.getItem('blockedUsers');
 
   if(blockedUsersFromStorage === null || blockedUsersFromStorage.length <= 1) {
     let p = document.createElement('p');
-    blockedUsersContainer.appendChild(p).innerText = 'Brak zablokowanych użytkowników.';
+    blockedUsersContainer.appendChild(p).innerText = '';
   } else {
     displayBlockedUsers(blockedUsersFromStorage);
   }
 
-  function addUser () {
-    const newUser = document.querySelector('form input').value.trim();
+  function resetList() {
+    localStorage.setItem('blockedUsers', '');
 
-    if(newUser.length > 0) {
+    chrome.tabs.query({currentWindow: true, active: true}, function (tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, 'reset', setResponse);
+    });
+
+    displayBlockedUsers('');
+  }
+
+  function addUser () {
+    const users = document.querySelector('form input').value.trim();
+
+    newUsers =
+    users
+      .split(',')
+      .filter(item => item.trim().length > 0)
+      .join()
+      .replace(/\s/g, '');
+
+    if(newUsers.length > 0) {
       if(localStorage.getItem('blockedUsers') !== null) {
         let oldStorage = localStorage.getItem('blockedUsers');
         let newStorage = '';
 
         //make storage unique
         if(!oldStorage.length) {
-          oldStorage += `${newUser}`;
+          oldStorage += `${newUsers}`;
         } else {
-          oldStorage += `,${newUser}`;
+          oldStorage += `,${newUsers}`;
         }
+
         oldStorage = oldStorage.toLowerCase().split(',');
         oldStorage = new Set(oldStorage);
         newStorage = [...oldStorage];
@@ -33,8 +52,9 @@ document.addEventListener('DOMContentLoaded', function() {
         //save new string to the localStorage
         localStorage.setItem('blockedUsers', newStorage);
       } else {
-        localStorage.setItem('blockedUsers', newUser);
+        localStorage.setItem('blockedUsers', newUsers);
       }
+
       let blockedUser = localStorage.getItem('blockedUsers');
       displayBlockedUsers(blockedUser);
 
@@ -54,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
       let p = document.createElement('p');
 
       blockedUsersContainer.innerText = '';
-      return blockedUsersContainer.appendChild(p).innerText = 'Brak zablokowanych użytkowników.';
+      return blockedUsersContainer.appendChild(p).innerText = '';
     }
 
     blockedUsersContainer.innerText = '';

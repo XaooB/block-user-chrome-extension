@@ -6,18 +6,43 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <div class='settings'>Realmadryt.pl — blokowanie użytkownika</div>
     <div id='container'>
-      <h2 class='title'>Podaj nazwę użytkownika</h2>
-      <span class='subtitle'>Na razie można dodawać użytkowników pojedynczo (wielkość liter nie ma znaczenia). W najbliższej aktualizacji zostanie to zmienione.</span>
-      <form class="user_block_list" id='user_block_list' name='user_block_list'>
-        <input name="user_name" placeholder="Wpisz nazwę użytkownika" />
-        <button>Dodaj użytkownika</button>
-      </form>
-      <section class='blocked_list'>
-        <p class='subtitle'>Lista aktualnie zablokowanych użytkowników:</p>
-        <ul id='blocked_users'></ul>
-      </section>
+      <main>
+        <h2 class='title'>Zablokuj użytkownika na stronie realmadryt.pl</h2>
+        <div class='inner_container'>
+          <h3 class='info_title'>Podstawowe informacje:</h3>
+          <ul class='info_list'>
+            <li>skrypt działa tylko wtedy, gdy przeglądany jest artykuł,</li>
+            <li>każdy kolejny użytkownik <b>musi</b> być oddzielony znakiem ',' — np. user1, user2,</li>
+            <li>wielkość znaków oraz ilość pustych spacji nie ma znaczenia.</li>
+            <li>nadal <strong>NIE ZALECAM</strong> dodawać użytkowników z dwuczłonową lub więcej nazwą — np. ala ma kota, będzie można ich usunąć, ale nie będą blokowani.
+          </ul>
+          <form class="user_block_list" id='user_block_list' name='user_block_list'>
+            <input name="user_name"  id='user_name' placeholder="Podaj nazwę użytkownika/ów.." />
+            <button type='button' title='Dodaje użytkownika do listy zablokowanych'>Zablokuj</button>
+          </form>
+          <section class='blocked_list'>
+            <div class='blocked_container'>
+              <p class='subtitle'>Lista zablokowanych użytkowników:</p>
+              <button type="button" id='reset' title='Czyści listę zablokowanych'>Resetuj</button>
+            </div>
+            <ul id='blocked_users'></ul>
+          </section>
+        </div>
+      </main>
+      <footer>
+        <ul>
+          <li title='O aplikacji'>
+            <a href="#">O aplikacji</a>
+          </li>
+          <li title='O autorze'>
+            <a href="#">O autorze</a>
+          </li>
+          <li title='Masz problem? Zgłoś go!'>
+            <a href="#">Zgłoś błąd</a>
+          </li>
+        </ul>
+      </footer>
     </div>
     <script src="popup.js" charset="utf-8"></script>
   </body>

@@ -3,7 +3,7 @@
     for (let i = 0; i < comments.length; i++) {
       for (let j = 0; j < users.length; j++) {
         if(comments[i].children[0].innerHTML.toLowerCase().indexOf(users[j].trim()) !== -1)
-        comments[i].style.display = 'none';
+          comments[i].style.display = 'none';
       }
     }
   }
@@ -21,11 +21,15 @@
     hideComments(commentsNodes, blockedUsersArray);
   }
 
-
   chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    const commentsNodes = document.querySelectorAll('#komentarze dl');
+    if(request === 'reset')
+    //tutaj dodac   sendResponse({error: false, usersList: blockedUsersArray})
+      return localStorage.setItem('blockedUsers', '');
+
 
     localStorage.setItem('blockedUsers', request);
+
+    const commentsNodes = document.querySelectorAll('#komentarze dl');
     let blockedUsersArray = localStorage.getItem('blockedUsers').split(',');
 
     //otherwise send list back
@@ -34,6 +38,5 @@
     //if theres no users to block blockedUsersArray[0] gonna be "".
     if(blockedUsersArray[0].length > 1)
       hideComments(commentsNodes, blockedUsersArray);
-
   });
 }());

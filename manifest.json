@@ -6,17 +6,17 @@
     "activeTab",
     "storage"
   ],
-  "version": "1.0.0",
+  "version": "1.0.2",
   "icons": {
-    "16": "resources/icon_16.png",
-    "48": "resources/icon_48.png",
-    "128": "resources/icon_128.png"
+    "32": "resources/logo_32x32.png",
+    "64": "resources/logo_64x64.png",
+    "128": "resources/logo_128x128.png"
   },
-  "description": "Wtyczka pozwala na blokowanie komentarzy innych użytkowników. Po dodaniu nazwy, komentarz przestaje być widoczny.",
+  "description": "Aplikacja pozwala użytkownikom na blokowanie użytkowników strony Realmadryt.pl.",
   "browser_action": {
-    "default_icon": "resources/icon_128.png",
+    "default_icon": "resources/logo_128x128.png",
     "default_popup": "popup.html",
-    "default_title": "Zablokuj użytkownika"
+    "default_title": "Zablokuj użytkownika na realmadryt.pl"
   },
   "content_scripts": [
         {
