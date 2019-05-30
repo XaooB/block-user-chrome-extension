@@ -16,4 +16,4 @@ Wtyczka działa **tylko wtedy, gdy** spełniony jest następujący warunek:
 
 ## Contribution
 
-Bartosz Lorek – [balorek@interia.com](mailto:balorek@interia.pl)
+Bartosz Lorek – [@me](mailto:balorek@interia.pl)
