@@ -13,13 +13,13 @@
           <h3 class='info_title'>Podstawowe informacje:</h3>
           <ul class='info_list'>
             <li>skrypt działa tylko wtedy, gdy przeglądany jest artykuł,</li>
-            <li>każdy kolejny użytkownik <b>musi</b> być oddzielony znakiem ',' — np. user1, user2,</li>
-            <li>wielkość znaków oraz ilość pustych spacji nie ma znaczenia.</li>
-            <li>nadal <strong>NIE ZALECAM</strong> dodawać użytkowników z dwuczłonową lub więcej nazwą — np. ala ma kota, będzie można ich usunąć, ale nie będą blokowani.
+            <li>każdy kolejny użytkownik <b>musi</b> być oddzielony znakiem ',' – np. user1, user2,</li>
+            <li>wielkość znaków oraz ilość pustych spacji nie ma znaczenia,</li>
+            <li>nadal <strong>NIE ZALECAM</strong> dodawać użytkowników z dwuczłonową lub więcej nazwą – np. ala ma kota, będzie można ich usunąć, ale nie będą blokowani.
           </ul>
           <form class="user_block_list" id='user_block_list' name='user_block_list'>
             <input name="user_name"  id='user_name' placeholder="Podaj nazwę użytkownika/ów.." />
-            <button type='button' title='Dodaje użytkownika do listy zablokowanych'>Zablokuj</button>
+            <button type='submit' title='Dodaje użytkownika do listy zablokowanych'>Zablokuj</button>
           </form>
           <section class='blocked_list'>
             <div class='blocked_container'>
@@ -32,17 +32,37 @@
       </main>
       <footer>
         <ul>
-          <li title='O aplikacji'>
-            <a href="#">O aplikacji</a>
+          <li title='O aplikacji' name='about'>
+            <a href="https://github.com/XaooB/block-user-chrome-extention" target="_blank">O aplikacji</a>
           </li>
-          <li title='O autorze'>
-            <a href="#">O autorze</a>
+          <li title='O autorze' name='author'>
+            <a href="https://www.linkedin.com/in/blorek/" target="_blank">O autorze</a>
           </li>
-          <li title='Masz problem? Zgłoś go!'>
+          <li title='Masz problem? Zgłoś go!' name='report'>
             <a href="#">Zgłoś błąd</a>
           </li>
         </ul>
       </footer>
+      <div id='modal'>
+        <section class='modal_wrapper'>
+          <header class='modal_header'>
+            <h5 class='modal_title'>Zgłoś błąd</h5>
+            <span class='modal_exit'>❌</span>
+          </header>
+          <form class="modal_form">
+            <label for="type" class='modal_label'>Rodzaj błędu</label>
+            <select class="modal_select" name="type">
+              <option value="0" disabled selected>Wybierz rodzaj problemu</option>
+              <option value="1">Nie mogę dodać/usunąć użytkownika</option>
+              <option value="2">Komentarze nie są ukrywane</option>
+              <option value="3">Inny problem</option>
+            </select>
+            <label for="type" class='modal_label'>Opis problemu</label>
+            <textarea name="name" class='modal_content' placeholder="Opisz swój problem.."></textarea>
+            <button type='submit' class='modal_button' title='Wyślij'>Wyślij</button>
+          </form>
+        </section>
+      </div>
     </div>
     <script src="popup.js" charset="utf-8"></script>
   </body>

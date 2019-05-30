@@ -23,9 +23,7 @@
 
   chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if(request === 'reset')
-    //tutaj dodac   sendResponse({error: false, usersList: blockedUsersArray})
       return localStorage.setItem('blockedUsers', '');
-
 
     localStorage.setItem('blockedUsers', request);
 

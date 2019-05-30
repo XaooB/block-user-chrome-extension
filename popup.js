@@ -1,7 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
+  const aboutContainer = document.querySelector('#modal');
   document.querySelector('button').addEventListener('click', addUser, false);
   document.querySelector('#reset').addEventListener('click', resetList, false);
   document.querySelector('form').addEventListener('submit', e => e.preventDefault(), false);
+  document.querySelector('.modal_button').addEventListener('click', sendReport, false);
+  document.querySelector('li[name="report"]').addEventListener('click', closeModal, false);
+  document.querySelector('.modal_exit').addEventListener('click', closeModal, false);
+
   const blockedUsersContainer = document.querySelector('#blocked_users');
   let blockedUsersFromStorage = localStorage.getItem('blockedUsers');
 
@@ -12,11 +17,20 @@ document.addEventListener('DOMContentLoaded', function() {
     displayBlockedUsers(blockedUsersFromStorage);
   }
 
+  function closeModal() {
+    aboutContainer.classList.toggle('modal_visibility');
+  }
+
+  function sendReport(e) {
+    e.preventDefault()
+    alert('Obsłuja formularza nie została jeszcze zaimplementowana!');
+  }
+
   function resetList() {
     localStorage.setItem('blockedUsers', '');
 
     chrome.tabs.query({currentWindow: true, active: true}, function (tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, 'reset', setResponse);
+      chrome.tabs.sendMessage(tabs[0].id, 'reset');
     });
 
     displayBlockedUsers('');
@@ -24,13 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function addUser () {
     const users = document.querySelector('form input').value.trim();
-
-    newUsers =
-    users
-      .split(',')
-      .filter(item => item.trim().length > 0)
-      .join()
-      .replace(/\s/g, '');
+    newUsers = users.split(',').map(item => item.trim()).filter(item => item.length > 0).join();
 
     if(newUsers.length > 0) {
       if(localStorage.getItem('blockedUsers') !== null) {
@@ -82,7 +90,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if(usersList.length >= 1) {
       for (var i = 0; i < usersList.length; i++) {
         let element = document.createElement('li');
-        blockedUsersContainer.appendChild(element).innerHTML = `${usersList[i]} - <span title='Usuń z listy' class='delete_user' data-name=${usersList[i]}>❌</span>`;
+        blockedUsersContainer.appendChild(element).innerHTML = `${usersList[i]} - <span title='Usuń z listy' class='delete_user' data-name='${usersList[i]}'>❌</span>`;
+        // blockedUsersContainer.appendChild(element).innerHTML = `${usersList[i]} - <span title='Usuń z listy' class='delete_user' data-name=${usersList[i].replace(/\s/g, '-')}>❌</span>`;
       }
       document.querySelectorAll('.delete_user').forEach(item => item.addEventListener('click', deleteUser, false));
     }
@@ -94,9 +103,11 @@ document.addEventListener('DOMContentLoaded', function() {
         index = null;
 
     blockedUsers = blockedUsers.split(',');
-    index = blockedUsers.indexOf(userName);
+    index = blockedUsers.indexOf(userName.replace(/-/g, ' '));
 
     //delete index
+    //problem jest taki, że dataset ucina sentencje jezeli zawierają puste znaki, np.
+    //ala ma kota = ala
     if(index !== -1)
       blockedUsers.splice(index, 1);
 
