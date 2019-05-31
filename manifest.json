@@ -6,7 +6,7 @@
     "activeTab",
     "storage"
   ],
-  "version": "1.0.2",
+  "version": "1.1.0",
   "icons": {
     "32": "resources/logo_32x32.png",
     "64": "resources/logo_64x64.png",
@@ -18,16 +18,14 @@
     "default_popup": "popup.html",
     "default_title": "Zablokuj użytkownika na realmadryt.pl"
   },
-  "content_scripts":
-    [
-      {
-        "matches": ["http://www.realmadryt.pl/index.php?co=aktualnosci&id=*"],
-        "js": ["content.js"]
-      }
-    ],
+  "content_scripts": [
+    {
+      "matches": ["http://www.realmadryt.pl/index.php?co=aktualnosci&id=*"],
+      "js": ["content.js"]
+    }
+  ],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
   }
-
 }

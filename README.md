@@ -1,6 +1,6 @@
 # Against stupidity on Realmadryt.pl
 
-> Masz dość idotycznych wypowiedzi? Żaden problem. Wtyczka pozwoli Ci ich zablokować.
+> Masz dość idotycznych wypowiedzi? Żaden problem. Wtyczka pozwoli Ci je zablokować.
 
 ## Conditions
 
@@ -13,6 +13,7 @@ Wtyczka działa **tylko wtedy, gdy** spełniony jest następujący warunek:
 ## Screenshot
 
 ![](icon_badge.png)
+
 ![](extention.png)
 
 ## Contribution
