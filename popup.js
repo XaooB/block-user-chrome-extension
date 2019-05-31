@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let index = null;
 
     blockedUsers = blockedUsers.split(',');
-    index = blockedUsers.indexOf(userName.replace(/-/g, ' '));
+    index = blockedUsers.indexOf(userName);
 
     if(index !== -1)
       blockedUsers.splice(index, 1);
