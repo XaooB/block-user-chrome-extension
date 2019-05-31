@@ -18,10 +18,16 @@
     "default_popup": "popup.html",
     "default_title": "Zablokuj użytkownika na realmadryt.pl"
   },
-  "content_scripts": [
-        {
-            "matches": ["http://www.realmadryt.pl/index.php?co=aktualnosci&id=*"],
-            "js": ["content.js"]
-        }
-    ]
+  "content_scripts":
+    [
+      {
+        "matches": ["http://www.realmadryt.pl/index.php?co=aktualnosci&id=*"],
+        "js": ["content.js"]
+      }
+    ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  }
+
 }

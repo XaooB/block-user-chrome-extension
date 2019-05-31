@@ -12,6 +12,7 @@ Wtyczka działa **tylko wtedy, gdy** spełniony jest następujący warunek:
 
 ## Screenshot
 
+![](icon_badge.png)
 ![](extention.png)
 
 ## Contribution

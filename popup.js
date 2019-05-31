@@ -34,6 +34,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     displayBlockedUsers('');
+
+    //send message to the background page and set badge to empty string
+    chrome.runtime.sendMessage({data: ``});
   }
 
   function addUser () {

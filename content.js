@@ -1,11 +1,16 @@
 (function() {
   function hideComments(comments, users) {
-    for (let i = 0; i < comments.length; i++) {
-      for (let j = 0; j < users.length; j++) {
-        if(comments[i].children[0].innerHTML.toLowerCase().indexOf(users[j].trim()) !== -1)
+    let deletedComments = 0;
+
+    for (let i = 0; i < comments.length; i++)
+      for (let j = 0; j < users.length; j++)
+        if(comments[i].children[0].innerHTML.toLowerCase().indexOf(users[j].trim()) !== -1) {
           comments[i].style.display = 'none';
-      }
-    }
+          deletedComments++;
+        }
+
+    //send number of deleted comments to the background
+    chrome.runtime.sendMessage({data: `${deletedComments}`});
   }
 
   const commentsNodes = document.querySelectorAll('#komentarze dl');
@@ -35,6 +40,9 @@
 
     //if theres no users to block blockedUsersArray[0] gonna be "".
     if(blockedUsersArray[0].length > 1)
-      hideComments(commentsNodes, blockedUsersArray);
+      return hideComments(commentsNodes, blockedUsersArray);
+
+    //send message to background to hide badge
+    chrome.runtime.sendMessage({data: ``});
   });
 }());
