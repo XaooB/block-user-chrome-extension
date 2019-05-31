@@ -108,13 +108,12 @@ form button {
   cursor: pointer;
   background:#0396DB;
   border:none;
-  font-size:.95em;
+  font-size:.85em;
   color:#fff;
-  padding:6px;
+  padding:6px 8px;
 }
 
 .blocked_list .subtitle {
-  font-size:1.1em;
   color:#1e1e1e;
 }
 
@@ -127,6 +126,7 @@ form button {
   display:inline-block;
   color:#1e1e1e;
   margin-right: 4px;
+  font-size:.9em;
 }
 
 .delete_user {
@@ -172,81 +172,4 @@ footer ul li a {
 
 footer ul li a:hover {
   color: #0396DB;
-}
-
-#modal {
-  position:absolute;
-  left:0;
-  top:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,.4);
-  padding:20px;
-  display:none;
-}
-
-.modal_visibility {
-  display: block !important;
-}
-
-.modal_wrapper {
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  width:85%;
-  position:absolute;
-  z-index: 2;
-  padding:10px 20px;
-  background:#fff;
-  color:#1e1e1e;
-}
-
-.modal_form {
-  margin-bottom:10px;
-}
-
-.modal_header {
-  display:flex;
-  flex-flow:row nowrap;
-  justify-content: space-between;
-  padding:10px 0;
-  border-bottom:1px solid #ededed;
-}
-
-.modal_title {
-  font-size:1.1em;
-  font-weight:bold;
-}
-
-.modal_exit {
-  cursor: pointer;
-  display:inline-block;
-}
-
-.modal_exit:hover {
-  color:#0396DB;
-}
-
-.modal_label {
-  display:block;
-  margin-bottom:5px;
-}
-
-.modal_select {
-  padding:6px 0;
-  width:100%;
-  outline:none;
-  border:none;
-  border-bottom:2px solid #0396DB;
-  margin-bottom:12px;
-}
-
-.modal_content {
-  min-height:70px;
-  max-height:130px;
-  outline:none;
-  width:100%;
-  padding:6px;
-  border:2px solid #0396DB;
-  resize: vertical;
 }

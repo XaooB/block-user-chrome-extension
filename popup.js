@@ -2,9 +2,6 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('button').addEventListener('click', addUser, false);
   document.querySelector('#reset').addEventListener('click', resetList, false);
   document.querySelector('form').addEventListener('submit', submitForm, false);
-  document.querySelector('.modal_button').addEventListener('click', sendReport, false);
-  document.querySelector('li[name="report"]').addEventListener('click', closeModal, false);
-  document.querySelector('.modal_exit').addEventListener('click', closeModal, false);
 
   const aboutContainer = document.querySelector('#modal');
   const blockedUsersContainer = document.querySelector('#blocked_users');
@@ -14,15 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
     blockedUsersContainer.innerText = '';
   } else {
     displayBlockedUsers(blockedUsersFromStorage);
-  }
-
-  function closeModal() {
-    aboutContainer.classList.toggle('modal_visibility');
-  }
-
-  function sendReport(e) {
-    e.preventDefault()
-    alert('Obsłuja formularza nie została jeszcze zaimplementowana!');
   }
 
   function submitForm(e) {
