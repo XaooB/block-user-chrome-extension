@@ -30,7 +30,7 @@
 
   chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     const commentsNodes = document.querySelectorAll('#komentarze dl');
-    
+
     if(request === 'reset')
       return localStorage.setItem('blockedUsers', '');
     localStorage.setItem('blockedUsers', request);
@@ -40,8 +40,8 @@
     //otherwise send list back
     sendResponse({error: false, usersList: blockedUsersArray})
 
-    //if theres no users to block blockedUsersArray[0] gonna be "".
-    if(blockedUsersArray[0].length > 1) {}
+    //if theres no users to block blockedUsersArray[0] becomes an emptying - [""].
+    if(blockedUsersArray[0].length > 1)
       return hideComments(commentsNodes, blockedUsersArray);
 
     //send message to background to hide badge
