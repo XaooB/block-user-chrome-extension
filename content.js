@@ -9,7 +9,10 @@
       for (let j = 0; j < users.length; j++)
       //user is ALWAYS at [2] index in the array
         if(comments[i].children[0].innerHTML.toLowerCase().split(',')[2].trim() === users[j]) {
-          comments[i].style.display = 'none';
+          comments[i].children[1].style.color = '#ee234e'
+          comments[i].children[1].style.fontStyle = 'italic';
+          comments[i].children[1].style.padding = '4px';
+          comments[i].children[1].innerText = 'użytkownik zablokowany';
           deletedComments++;
         }
     //send number of deleted comments to the background
