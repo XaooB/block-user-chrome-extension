@@ -108,13 +108,14 @@ form button {
   cursor: pointer;
   background:#0396DB;
   border:none;
-  font-size:.85em;
+  font-size:.9em;
   color:#fff;
   padding:6px 8px;
 }
 
 .blocked_list .subtitle {
   color:#1e1e1e;
+  font-size:1.1em;
 }
 
 .blocked_list ul {
@@ -126,7 +127,6 @@ form button {
   display:inline-block;
   color:#1e1e1e;
   margin-right: 4px;
-  font-size:.9em;
 }
 
 .delete_user {
