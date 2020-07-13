@@ -20,7 +20,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["http://www.realmadryt.pl/index.php?co=aktualnosci&id=*"],
+      "matches": ["*://*.realmadryt.pl/news/*", "*://*.realmadryt.pl/cafe-bernabeu"],
       "js": ["content.js"]
     }
   ],

@@ -1,53 +1,116 @@
-(function() {
-  const commentsNodes = document.querySelectorAll('#komentarze dl');
-  let blockedUsers = localStorage.getItem('blockedUsers');
+var id = window.setInterval(function () {
+    const _comments_holder = '.comments-list .user-comment';
+    const commentsNodes = document.querySelectorAll(_comments_holder);
+    let blockedUsers = getBlockedUsers();
 
-  function hideComments(comments, users) {
-    let deletedComments = 0;
+    //Due to content being loaded ansynchronously we need to check whenever comments has been loaded or not
+    //Then we load the content script to make changes to the loaded page
 
-    for (let i = 0; i < comments.length; i++)
-      for (let j = 0; j < users.length; j++)
-      //user is ALWAYS at [2] index in the array
-        if(comments[i].children[0].innerHTML.toLowerCase().split(',')[2].trim() === users[j]) {
-          comments[i].children[1].style.color = '#ee234e'
-          comments[i].children[1].style.fontStyle = 'italic';
-          comments[i].children[1].style.padding = '4px';
-          comments[i].children[1].innerText = 'użytkownik zablokowany';
-          deletedComments++;
+    if (commentsNodes.length) {
+        window.clearInterval(id);
+
+        if (blockedUsers !== null) {
+            hideComments(commentsNodes, blockedUsers);
+        } else {
+            saveBlockedUsers([]);
         }
+    }
+}, 1000);
+
+function hideComments(comments, users, deletedComments = 0) {
+    const _comments_blocked_text = 'Użytkownik zablokowany. Aby zobaczyc zawartosc musisz go odblokowac.';
+
+    for (let i = 0; i < comments.length; i++) {
+        let commentUser = comments[i].querySelector('.user-comment__name').textContent.trim();
+        if (users.includes(commentUser)) {
+            let comment = comments[i].querySelector('.comment-text'),
+                oldComment = comment.textContent.trim();
+
+            comment.setAttribute(
+                "style",
+                "color: #ff0033; font-style: italic; font-size: 13px; padding: 4px 0;"
+            );
+            comment.textContent = _comments_blocked_text;
+            createActionLink('Odblokuj', comments[i], oldComment);
+            deletedComments++;
+        } else {
+            createActionLink('Zablokuj', comments[i]);
+        }
+    }
     //send number of deleted comments to the background
-    if(deletedComments !== 0)
-      return chrome.runtime.sendMessage({data: `${deletedComments}`});
+    if (deletedComments !== 0) {
+        return chrome.runtime.sendMessage({data: `${deletedComments}`});
+    }
+
     chrome.runtime.sendMessage({data: ''});
-  }
+}
 
-  if(blockedUsers === null)
-    localStorage.setItem('blockedUsers', '');
+function createActionLink(nodeName, holder, oldComment = null) {
+    let anchor = document.createElement('a'),
+        userName = holder.querySelector('.user-comment__name').textContent.trim();
 
-  blockedUsers = localStorage.getItem('blockedUsers');
+    anchor.classList.add('unblock-user', 'link-naked', 'text-color_appblue', 'box-inline', 'shift-margin_2-right', 'user-actions');
+    anchor.setAttribute('style', 'font-weight: bold;');
+    anchor.textContent = nodeName;
+    anchor.title = nodeName + ' uzytkownika ' + userName;
+    anchor.dataset.userName = userName;
 
-  if(blockedUsers.length) {
-    //function expects an array as 2nd parameter
-    hideComments(commentsNodes,  blockedUsers.split(','));
-  }
+    if (nodeName === 'Zablokuj') {
+        anchor.onclick = blockUser;
+    } else {
+        anchor.onclick = unblockUser;
+    }
 
-  chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    const commentsNodes = document.querySelectorAll('#komentarze dl');
+    if (oldComment) {
+        anchor.dataset.hiddenContent = oldComment;
+    }
 
-    if(request === 'reset')
-      return localStorage.setItem('blockedUsers', '');
-    localStorage.setItem('blockedUsers', request);
+    holder.querySelector('.comments-action').append(anchor);
+}
 
-    let blockedUsersArray = localStorage.getItem('blockedUsers').split(',');
+function unblockUser(event) {
+    let element = event.target.closest('article'),
+        comment = element.querySelector('.comment-text'),
+        oldComment = comment.textContent,
+        blockedUsers = getBlockedUsers(),
+        userName = element.querySelector('.user-comment__name').textContent.trim(),
+        indexToDelete = blockedUsers.indexOf(userName);
 
-    //otherwise send list back
-    sendResponse({error: false, usersList: blockedUsersArray})
+    blockedUsers.splice(indexToDelete, 1);
+    saveBlockedUsers(blockedUsers.join());
 
-    //if theres no users to block blockedUsersArray[0] becomes an emptying - [""].
-    if(blockedUsersArray[0].length > 1)
-      return hideComments(commentsNodes, blockedUsersArray);
+    comment.textContent = this.dataset.hiddenContent;
+    comment.setAttribute('style', '');
+    element.querySelector('.unblock-user').remove();
+    createActionLink('Zablokuj', element, oldComment);
+}
 
-    //send message to background to hide badge
-    chrome.runtime.sendMessage({data: ''});
-  });
-}());
+function blockUser(event) {
+    let element = event.target.closest('article'),
+        comment = element.querySelector('.comment-text'),
+        oldComment = comment.textContent,
+        userName = element.querySelector('.user-comment__name').textContent.trim(),
+        blockedUsers = getBlockedUsers();
+
+    blockedUsers.push(userName);
+    let newList = [...new Set(blockedUsers)].join();
+    saveBlockedUsers(newList);
+
+    comment.textContent = 'Użytkownik zablokowany. Aby zobaczyc zawartosc musisz go odblokowac.';
+    comment.setAttribute(
+        "style",
+        "color: #ff0033; font-style: italic; font-size: 13px; padding: 4px 0;"
+    );
+
+    element.querySelector('.unblock-user').remove();
+    createActionLink('Odblokuj', element, oldComment);
+}
+
+function getBlockedUsers() {
+    return localStorage.getItem('blockedUsers').split(',') || [];
+}
+
+function saveBlockedUsers(users) {
+    localStorage.setItem('blockedUsers', users);
+}
+
