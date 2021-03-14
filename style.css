@@ -16,6 +16,19 @@ body {
   padding:20px;
 }
 
+.inner_container h2 {
+  margin-bottom: 8px;
+}
+
+.inner_container p {
+  line-height: 1.5;
+  font-size: 1.1em;
+}
+
+.inner_container p:not(:last-child) {
+  margin-bottom: 5px;
+}
+
 main {
   position:relative;
   overflow: hidden;
@@ -42,9 +55,19 @@ main .toggle__icon {
 }
 
 .title {
+  font-size:1.3em;
+  font-weight:lighter;
+}
+
+.sub-title {
+  font-weight: bold;
+  font-size: .95em;
+  margin-top: 2px;
+}
+
+.title-container {
   color:#fff;
   padding:20px;
-  font-size:1.3em;
   font-weight:lighter;
   background:#0396DB;
 }
@@ -87,7 +110,7 @@ form input:focus ~ label {
   font-size:.9em;
 }
 
-form button {
+.button {
   width:100%;
   cursor: pointer;
   background:#0396DB;
