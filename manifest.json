@@ -3,10 +3,9 @@
   "manifest_version": 2,
   "content_security_policy": "script-src 'self'; object-src 'self'",
   "permissions": [
-    "activeTab",
-    "storage"
+    "activeTab"
   ],
-  "version": "1.0.61",
+  "version": "1.0.64",
   "icons": {
     "32": "resources/logo_32x32.png",
     "64": "resources/logo_64x64.png",

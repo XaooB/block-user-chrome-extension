@@ -17,45 +17,20 @@ XHR.setRequestHeader = function (header, value) {
 };
 
 XHR.send = function (postData) {
-
     this.addEventListener('load', function () {
-        var endTime = (new Date()).toISOString();
-
         var myUrl = this._url ? this._url.toLowerCase() : this._url;
         if (myUrl) {
-
-            if (postData) {
-                if (typeof postData === 'string') {
-                    try {
-                        // here you get the REQUEST HEADERS, in JSON format, so you can also use JSON.parse
-                        this._requestHeaders = postData;
-                    } catch (err) {
-                        console.log('Request Header JSON decode failed, transfer_encoding field could be base64');
-                        console.log(err);
-                    }
-                } else if (typeof postData === 'object' || typeof postData === 'array' || typeof postData === 'number' || typeof postData === 'boolean') {
-                    // do something if you need
-                }
-            }
-
-            // here you get the RESPONSE HEADERS
-            var responseHeaders = this.getAllResponseHeaders();
-
             if (this.responseType != 'blob' && this.responseText) {
                 try {
-                    // here you get RESPONSE TEXT (BODY), in JSON format, so you can use JSON.parse
-                    var response = this.responseText;
                     var allowedUrls = ['shoutbox.json', 'comments/latest.json'];
 
-                    // printing url, request headers, response headers, response body, to console
                     if (new RegExp(allowedUrls.join("|")).test(this._url)) {
                         var extensionID = 'dbfcncdkpkegbhhphnoajcjnhmkbfglk';
-                        chrome.runtime.sendMessage(extensionID, {interception: true});
+                        chrome.runtime.sendMessage(extensionID, { interception: true });
                     }
                 } catch (err) {
                 }
             }
-
         }
     });
 
