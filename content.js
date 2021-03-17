@@ -19,7 +19,8 @@ const config = {
         commentText: '.comment-text',
         commentAction: '.comments-action',
         commentsBlocked: `[data-user-type="BLOCKED"]`,
-        customBlockButton: '.unblock-user'
+        commentsMoreButton: '.c-comments__new-link:not(.fn-hidden)',
+        customBlockButton: '.unblock-user',
     }
 }
 
@@ -41,6 +42,7 @@ function initApp() {
 
         if (message.interception) {
             hideComments(commentsNodes, blockedUsers);
+            bindMoreButton();
         }
 
         if (message.reset) {
@@ -53,6 +55,34 @@ function initApp() {
             hideComments(blockedCommentsHolder, blockedUsers);
         }
     });
+
+    bindMoreButton();
+}
+
+function bindMoreButton() {
+    let buttons = document.querySelectorAll(config.selectors.commentsMoreButton)
+
+    if (buttons) {
+        buttons.forEach(button => {
+            if (!button.classList.contains('fn-hidden') && !button.classList.contains('hide')) {
+                button.addEventListener('click', function () {
+                    setTimeout(hideCommentsOnExpand.bind(this), 100)
+                }, true)
+            }
+        });
+    }
+}
+
+function hideCommentsOnExpand() {
+    let article = this.closest('article');
+    let isExpanded = article.classList.contains('expanded');
+
+    if (isExpanded) {
+        let comments = article.querySelectorAll(config.selectors.commentHolder),
+            blockedUsers = getBlockedUsers();
+
+        hideComments(comments, blockedUsers)
+    }
 }
 
 function deleteCommentNotice(originalNode) {
