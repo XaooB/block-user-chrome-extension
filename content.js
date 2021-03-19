@@ -20,7 +20,11 @@ const config = {
         commentsBlocked: `[data-user-type="BLOCKED"]`,
         commentsMoreButton: '.c-comments__new-link:not(.fn-hidden)',
         commentsArticleMoreButton: '.c-comments__loadMore button',
+        commentsSendButton: '.c-comments__btn',
         customBlockButton: '.unblock-user',
+    },
+    global: {
+        stopInterception: false,
     }
 }
 
@@ -39,11 +43,19 @@ function initApp() {
     chrome.runtime.onMessage.addListener(function (message, sender) {
         let commentsNodes = document.querySelectorAll(config.selectors.commentHolder),
             blockedUsers = getBlockedUsers();
-
+        
+        //We need to bind button responsible for sending/editing comment 
+        // independently from stopInterception flag
         if (message.interception) {
+            bindCommentsSendButton();
+        }
+        
+        if (message.interception && !config.global.stopInterception) {
             hideComments(commentsNodes, blockedUsers);
             bindArticleMoreButton();
             bindMoreButton();
+        } else if (message.interception) {
+            config.global.stopInterception = false;
         }
 
         if (message.reset) {
@@ -53,12 +65,25 @@ function initApp() {
                     return el.closest(config.selectors.commentHolder)
                 }),
                 blockedUsers = getBlockedUsers();
-
+            
+            cleanupComments(blockedComments)
             hideComments(blockedCommentsHolder, blockedUsers);
         }
     });
 
     bindMoreButton();
+}
+
+function bindCommentsSendButton() {
+    let buttons = document.querySelectorAll(config.selectors.commentsSendButton)
+
+    if (buttons.length) {
+        buttons.forEach(button => {
+            button.addEventListener('click', function () {
+                config.global.stopInterception = true;
+            }, true)
+        })
+    }
 }
 
 function bindMoreButton() {
@@ -129,7 +154,7 @@ function createCommentNotice(originalNode) {
     div.classList.add('comment-text', 'comment-notice-message-copy');
     div.setAttribute(
         "style",
-        "color: #ff0033; font-style: italic; font-size: 13px; padding: 4px 0;"
+        "color: #afafaf; font-size: 13px; padding: 4px 0;"
     );
 
     div.innerText = config.messages.userBlocked;
@@ -153,6 +178,15 @@ function resetComments(comments, unblockedUserName) {
             createActionLink(config.labels.block, comments[i]);
         }
     }
+}
+
+function cleanupComments(comments) {
+    comments.forEach(comment => {
+        comment.parentNode.removeChild(comment.nextSibling)
+        comment.nextSibling.removeChild(comment.parentNode.querySelector(config.selectors.customBlockButton))
+        comment.dataset.userType = config.userType.unblocked;
+        comment.setAttribute('style', '');
+    });
 }
 
 function hideComments(comments, users, deletedComments = 0, userToBeBlocked = '') {
