@@ -1,7 +1,7 @@
 const config = {
     messages: {
         userMarkedAsBlocked: 'Użytkownik został dodany do listy.',
-        userBlocked: 'Użytkownik znajduje się na liście zablokowanych.'
+        userBlocked: 'Użytkownik znajduje się na liście zablokowanych.',
     },
     userType: {
         blocked: 'BLOCKED',
@@ -10,7 +10,6 @@ const config = {
     labels: {
         block: 'Zablokuj',
         unblock: 'Odblokuj',
-        showBlockedText: 'Pokaż komentarz'
     },
     selectors: {
         userName: '.user-comment__name',
@@ -20,6 +19,7 @@ const config = {
         commentAction: '.comments-action',
         commentsBlocked: `[data-user-type="BLOCKED"]`,
         commentsMoreButton: '.c-comments__new-link:not(.fn-hidden)',
+        commentsArticleMoreButton: '.c-comments__loadMore button',
         customBlockButton: '.unblock-user',
     }
 }
@@ -37,21 +37,23 @@ function initApp() {
     (document.head || document.documentElement).appendChild(script);
 
     chrome.runtime.onMessage.addListener(function (message, sender) {
-        let commentsNodes = document.querySelectorAll(config.selectors.commentHolder);
-        let blockedUsers = getBlockedUsers();
+        let commentsNodes = document.querySelectorAll(config.selectors.commentHolder),
+            blockedUsers = getBlockedUsers();
 
         if (message.interception) {
             hideComments(commentsNodes, blockedUsers);
+            bindArticleMoreButton();
             bindMoreButton();
         }
 
         if (message.reset) {
             localStorage.setItem('blockedUsers', '')
-            let blockedComments = document.querySelectorAll(config.selectors.commentsBlocked);
-            let blockedCommentsHolder = Array.from(blockedComments).map(function (el) {
-                return el.closest(config.selectors.commentHolder)
-            });
-            let blockedUsers = getBlockedUsers();
+            let blockedComments = document.querySelectorAll(config.selectors.commentsBlocked),
+                blockedCommentsHolder = Array.from(blockedComments).map(function (el) {
+                    return el.closest(config.selectors.commentHolder)
+                }),
+                blockedUsers = getBlockedUsers();
+
             hideComments(blockedCommentsHolder, blockedUsers);
         }
     });
@@ -73,9 +75,34 @@ function bindMoreButton() {
     }
 }
 
+function bindArticleMoreButton() {
+    let button = document.querySelector(config.selectors.commentsArticleMoreButton),
+        oldComments = null;
+
+    if (button) {
+        button.addEventListener('click', function () {
+            oldComments = Array.from(document.querySelectorAll(config.selectors.commentHolder));
+
+            let interval = setInterval(function () {
+                let newComments = Array.from(document.querySelectorAll(config.selectors.commentHolder));
+
+                if (newComments.length > oldComments.length) {
+                    let commentsDiff = newComments
+                        .filter(x => !oldComments.includes(x))
+                        .concat(oldComments.filter(x => !newComments.includes(x)));
+                    
+                    hideComments(commentsDiff, getBlockedUsers());
+                    bindMoreButton();
+                    clearInterval(interval);
+                }
+            }, 500)
+        }, true)
+    }
+}
+
 function hideCommentsOnExpand() {
-    let article = this.closest('article');
-    let isExpanded = article.classList.contains('expanded');
+    let article = this.closest('article'),
+        isExpanded = article.classList.contains('expanded');
 
     if (isExpanded) {
         let comments = article.querySelectorAll(config.selectors.commentHolder),
@@ -88,7 +115,7 @@ function hideCommentsOnExpand() {
 function deleteCommentNotice(originalNode) {
     let noticeNode = originalNode.querySelector('.comment-notice-message-copy'),
         comment = originalNode.querySelector(config.selectors.commentText);
-    
+
     if (noticeNode) {
         comment.parentNode.removeChild(noticeNode);
     }
@@ -104,7 +131,7 @@ function createCommentNotice(originalNode) {
         "style",
         "color: #ff0033; font-style: italic; font-size: 13px; padding: 4px 0;"
     );
-    
+
     div.innerText = config.messages.userBlocked;
     insertAfter(div, originalNode);
 }
@@ -140,7 +167,7 @@ function hideComments(comments, users, deletedComments = 0, userToBeBlocked = ''
         if (commentUserName === loggedUser) {
             continue;
         }
-        
+
         if (userToBeBlocked && userToBeBlocked === commentUserName) {
             commentContent.style.display = 'none';
             commentContent.dataset.userType = config.userType.blocked;
@@ -197,7 +224,7 @@ function createActionLink(nodeName, holder, oldComment = null) {
             anchor.onclick = blockUser;
             break;
     }
-    
+
     if (oldComment) {
         anchor.dataset.hiddenContent = oldComment;
     }
@@ -215,7 +242,7 @@ function unblockUser(event) {
 
     blockedUsers.splice(indexToDelete, 1);
     saveBlockedUsers(blockedUsers.join());
-    
+
     comment.dataset.userType = config.userType.unblocked;
     comment.setAttribute('style', '');
     resetComments(comments, userName);
