@@ -14,7 +14,7 @@ const config = {
     selectors: {
         userName: '.user-comment__name',
         loggedUserName: '.signed-user-name',
-        commentHolder: '.comments-list .user-comment',
+        commentHolder: '.comments-list .user-comment:not(.sponsor-comment)',
         commentText: '.comment-text',
         commentAction: '.comments-action',
         commentsBlocked: `[data-user-type="BLOCKED"]`,
