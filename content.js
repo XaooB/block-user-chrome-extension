@@ -88,7 +88,13 @@ function bindFunction() {
     let node = this.closest('.comments-list--level2'),
         nodeParent = this.closest('.expanded'),
         blockedUsers = getBlockedUsers(),
+        isUserLogged = document.querySelector(config.selectors.loggedUserName),
         self = this;
+    
+    //If user is not logged in do not even bother to bind event listener
+    if (!isUserLogged) {
+        return;
+    }
     
     setTimeout(function () {
         if (!node) {
@@ -142,9 +148,10 @@ function bindArticleMoreButton() {
                     
                     hideComments(commentsDiff, getBlockedUsers());
                     bindMoreButton();
+                    bindAnswerButton();
                     clearInterval(interval);
                 }
-            }, 500)
+            }, 300)
         }, true)
     }
 }
