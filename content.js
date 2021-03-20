@@ -249,7 +249,7 @@ function hideComments(comments, users, deletedComments = 0, userToBeBlocked = ''
         }
     }
     
-    chrome.runtime.sendMessage({blockedAmount: getBlockedUsers().length.toString()});
+    chrome.runtime.sendMessage({blockedAmount: getBlockedUsers().length > 0 ? getBlockedUsers().length.toString() : ''});
 }
 
 function createActionLink(nodeName, holder, oldComment = null) {
@@ -302,7 +302,7 @@ function unblockUser(event) {
     comment.setAttribute('style', '');
     resetComments(comments, userName);
 
-    chrome.runtime.sendMessage({blockedAmount: getBlockedUsers().length.toString()});
+    chrome.runtime.sendMessage({blockedAmount: getBlockedUsers().length > 0 ? getBlockedUsers().length.toString() : ''});
 }
 
 function blockUser(event) {
