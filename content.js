@@ -42,6 +42,7 @@ function initApp() {
 
     chrome.runtime.onMessage.addListener(function (message, sender) {
         let commentsNodes = document.querySelectorAll(config.selectors.commentHolder),
+            isUserLogged = document.querySelector(config.selectors.loggedUserName),
             blockedUsers = getBlockedUsers();
         
         //We need to stop intercepting AJAX calls if user sent new comment or edited the old one (edit.json/post.json)
@@ -49,6 +50,7 @@ function initApp() {
             config.global.stopInterception = true;
         }
 
+        //Means that either edit or post was called
         if (message.interception && !config.global.stopInterception) {
             hideComments(commentsNodes, blockedUsers);
             bindArticleMoreButton();
@@ -56,6 +58,11 @@ function initApp() {
             bindAnswerButton();
         } else if (message.interception) {
             config.global.stopInterception = false;
+            
+            //Clicking on Answer button on your own comment was breaking the list and Block/Unblock button was missing
+            if (isUserLogged) {
+                bindAnswerButton();
+            }
         }
 
         if (message.reset) {
