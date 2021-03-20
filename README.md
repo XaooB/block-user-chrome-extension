@@ -7,7 +7,7 @@
 Wtyczka działa **tylko wtedy, gdy** spełniony jest następujący warunek:
 
 ```js
-"matches": ["http://www.realmadryt.pl/index.php?co=aktualnosci&id=*"]
+"matches": ["*://*.realmadryt.pl/news/*", "*://*.realmadryt.pl/cafe-bernabeu"]
 ```
 
 ## Screenshot
