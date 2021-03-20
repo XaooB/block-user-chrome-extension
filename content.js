@@ -75,7 +75,13 @@ function initApp() {
 }
 
 function bindAnswerButton() {
-    let buttons = document.querySelectorAll(config.selectors.commentsAnswerButton);
+    let buttons = document.querySelectorAll(config.selectors.commentsAnswerButton),
+        isUserLogged = document.querySelector(config.selectors.loggedUserName);
+
+    //If user is not logged in do not even bother to bind event listener
+    if (!isUserLogged) {
+        return;
+    }
     
     if (buttons) {
         buttons.forEach(button => {
@@ -88,13 +94,7 @@ function bindFunction() {
     let node = this.closest('.comments-list--level2'),
         nodeParent = this.closest('.expanded'),
         blockedUsers = getBlockedUsers(),
-        isUserLogged = document.querySelector(config.selectors.loggedUserName),
         self = this;
-    
-    //If user is not logged in do not even bother to bind event listener
-    if (!isUserLogged) {
-        return;
-    }
     
     setTimeout(function () {
         if (!node) {
