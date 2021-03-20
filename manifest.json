@@ -5,7 +5,7 @@
   "permissions": [
     "activeTab"
   ],
-  "version": "1.0.70",
+  "version": "1.0.71",
   "icons": {
     "32": "resources/logo_32x32.png",
     "64": "resources/logo_64x64.png",
