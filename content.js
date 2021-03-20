@@ -20,7 +20,6 @@ const config = {
         commentsBlocked: `[data-user-type="BLOCKED"]`,
         commentsMoreButton: '.c-comments__new-link:not(.fn-hidden)',
         commentsArticleMoreButton: '.c-comments__loadMore button',
-        commentsSendButton: '.c-comments__btn',
         customBlockButton: '.unblock-user',
     },
     global: {
@@ -44,12 +43,11 @@ function initApp() {
         let commentsNodes = document.querySelectorAll(config.selectors.commentHolder),
             blockedUsers = getBlockedUsers();
         
-        //We need to bind button responsible for sending/editing comment 
-        // independently from stopInterception flag
-        if (message.interception) {
-            bindCommentsSendButton();
+        //We need to stop intercepting AJAX calls if user sent new comment or edited the old one (edit.json/post.json)
+        if (message.stopInterception) {
+            config.global.stopInterception = true;
         }
-        
+
         if (message.interception && !config.global.stopInterception) {
             hideComments(commentsNodes, blockedUsers);
             bindArticleMoreButton();
@@ -74,18 +72,6 @@ function initApp() {
     bindMoreButton();
 }
 
-function bindCommentsSendButton() {
-    let buttons = document.querySelectorAll(config.selectors.commentsSendButton)
-
-    if (buttons.length) {
-        buttons.forEach(button => {
-            button.addEventListener('click', function () {
-                config.global.stopInterception = true;
-            }, true)
-        })
-    }
-}
-
 function bindMoreButton() {
     let buttons = document.querySelectorAll(config.selectors.commentsMoreButton)
 
@@ -93,7 +79,7 @@ function bindMoreButton() {
         buttons.forEach(button => {
             if (!button.classList.contains('fn-hidden') && !button.classList.contains('hide')) {
                 button.addEventListener('click', function () {
-                    setTimeout(hideCommentsOnExpand.bind(this), 100)
+                    setTimeout(hideCommentsOnExpand.bind(this), 50)
                 }, true)
             }
         });
@@ -223,12 +209,8 @@ function hideComments(comments, users, deletedComments = 0, userToBeBlocked = ''
             createActionLink(config.labels.block, comments[i]);
         }
     }
-    //send number of deleted comments to the background
-    if (deletedComments !== 0) {
-        chrome.runtime.sendMessage({data: `${deletedComments}`});
-    } else {
-        chrome.runtime.sendMessage({data: ''});
-    }
+    
+    chrome.runtime.sendMessage({blockedAmount: getBlockedUsers().length.toString()});
 }
 
 function createActionLink(nodeName, holder, oldComment = null) {
@@ -280,6 +262,8 @@ function unblockUser(event) {
     comment.dataset.userType = config.userType.unblocked;
     comment.setAttribute('style', '');
     resetComments(comments, userName);
+
+    chrome.runtime.sendMessage({blockedAmount: getBlockedUsers().length.toString()});
 }
 
 function blockUser(event) {

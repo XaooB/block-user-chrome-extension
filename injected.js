@@ -24,9 +24,14 @@
                 if (this.responseType != 'blob' && this.responseText) {
                     try {
                         var allowedUrls = ['shoutbox.json', 'comments/latest.json'];
+                        var notAllowedUrls = ['edit.json', 'post.json']
+                        var extensionID = 'dbfcncdkpkegbhhphnoajcjnhmkbfglk';
+
+                        if (new RegExp(notAllowedUrls.join("|")).test(this._url)) {
+                            chrome.runtime.sendMessage(extensionID, {stopInterception: true});
+                        }
 
                         if (new RegExp(allowedUrls.join("|")).test(this._url)) {
-                            var extensionID = 'dbfcncdkpkegbhhphnoajcjnhmkbfglk';
                             chrome.runtime.sendMessage(extensionID, {interception: true});
                         }
                     } catch (err) {
