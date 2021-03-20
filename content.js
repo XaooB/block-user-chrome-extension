@@ -20,6 +20,7 @@ const config = {
         commentsBlocked: `[data-user-type="BLOCKED"]`,
         commentsMoreButton: '.c-comments__new-link:not(.fn-hidden)',
         commentsArticleMoreButton: '.c-comments__loadMore button',
+        commentsAnswerButton: '.comments-action > :first-child',
         customBlockButton: '.unblock-user',
     },
     global: {
@@ -52,6 +53,7 @@ function initApp() {
             hideComments(commentsNodes, blockedUsers);
             bindArticleMoreButton();
             bindMoreButton();
+            bindAnswerButton();
         } else if (message.interception) {
             config.global.stopInterception = false;
         }
@@ -72,6 +74,42 @@ function initApp() {
     bindMoreButton();
 }
 
+function bindAnswerButton() {
+    let buttons = document.querySelectorAll(config.selectors.commentsAnswerButton);
+    
+    if (buttons) {
+        buttons.forEach(button => {
+            button.addEventListener('click', bindFunction, true);
+        })
+    }
+}
+
+function bindFunction() {
+    let node = this.closest('.comments-list--level2'),
+        nodeParent = this.closest('.expanded'),
+        blockedUsers = getBlockedUsers(),
+        self = this;
+    
+    setTimeout(function () {
+        if (!node) {
+            //We have to do that because if user wanted to answer to the original comment (parent)
+            //then node was set to undefined and hideComments wasn't firing. 
+            node = self.closest('article');
+        }
+        
+        if (node) {
+            bindAnswerButton.bind(self)();
+            //We are filtering out parent node to NOT allow adding two or more action buttons
+            let comments = node.querySelectorAll('article'),
+                filteredComments = Array.from(comments).filter(x => x !== nodeParent); 
+            
+            if (filteredComments) {
+                hideComments(filteredComments, blockedUsers)
+            }
+        }
+    },0)
+}
+
 function bindMoreButton() {
     let buttons = document.querySelectorAll(config.selectors.commentsMoreButton)
 
@@ -79,7 +117,7 @@ function bindMoreButton() {
         buttons.forEach(button => {
             if (!button.classList.contains('fn-hidden') && !button.classList.contains('hide')) {
                 button.addEventListener('click', function () {
-                    setTimeout(hideCommentsOnExpand.bind(this), 50)
+                    setTimeout(hideCommentsOnExpand.bind(this), 0)
                 }, true)
             }
         });
@@ -120,6 +158,7 @@ function hideCommentsOnExpand() {
             blockedUsers = getBlockedUsers();
 
         hideComments(comments, blockedUsers)
+        bindAnswerButton();
     }
 }
 
