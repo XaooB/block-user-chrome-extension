@@ -15,12 +15,14 @@ const config = {
         userName: '.user-comment__name',
         loggedUserName: '.signed-user-name',
         commentHolder: '.comments-list .user-comment:not(.sponsor-comment)',
+        commentHolderLevel2: '.comments-list--level2 article',
         commentText: '.comment-text',
         commentAction: '.comments-action',
         commentsBlocked: `[data-user-type="BLOCKED"]`,
         commentsMoreButton: '.c-comments__new-link:not(.fn-hidden)',
         commentsArticleMoreButton: '.c-comments__loadMore button',
         commentsAnswerButton: '.comments-action > :first-child',
+        commentsLikeButton: '.c-comments__rating-container i',
         customBlockButton: '.unblock-user',
     },
     global: {
@@ -49,6 +51,12 @@ function initApp() {
         if (message.stopInterception) {
             config.global.stopInterception = true;
         }
+        
+        //Rearrange the list if user liked or unliked the comment
+        if (message.likeUnlike) {
+            let commentId = message.likeUnlike;
+            rearangeCommentsOnLikeUnlike(commentId);
+        }
 
         //Means that either edit or post was called
         if (message.interception && !config.global.stopInterception) {
@@ -65,6 +73,7 @@ function initApp() {
             }
         }
 
+        //Reset the blocked users list
         if (message.reset) {
             localStorage.setItem('blockedUsers', '')
             let blockedComments = document.querySelectorAll(config.selectors.commentsBlocked),
@@ -81,6 +90,23 @@ function initApp() {
     bindMoreButton();
 }
 
+function rearangeCommentsOnLikeUnlike(commentId) {
+    let comment = document.querySelector('#comment' + commentId),
+        commentChilds = Array.from(comment.querySelectorAll(config.selectors.commentHolderLevel2)),
+        comments = [];
+
+    //If user liked/unliked expanded comment we need to add that to the rest of the comments (childs)
+    //to rearrange list again
+    if (commentChilds.length) {
+        commentChilds = [...commentChilds, comment];
+        comments = commentChilds;
+    } else {
+        comments = [comment];
+    }
+
+    hideComments(comments, getBlockedUsers());
+}
+
 function bindAnswerButton() {
     let buttons = document.querySelectorAll(config.selectors.commentsAnswerButton),
         isUserLogged = document.querySelector(config.selectors.loggedUserName);
@@ -92,12 +118,12 @@ function bindAnswerButton() {
     
     if (buttons) {
         buttons.forEach(button => {
-            button.addEventListener('click', bindFunction, true);
+            button.addEventListener('click', bindAnswerButtonFunction, true);
         })
     }
 }
 
-function bindFunction() {
+function bindAnswerButtonFunction() {
     let node = this.closest('.comments-list--level2'),
         nodeParent = this.closest('.expanded'),
         blockedUsers = getBlockedUsers(),
