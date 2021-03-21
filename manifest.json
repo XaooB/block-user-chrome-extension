@@ -2,9 +2,6 @@
   "name": "Realmadrid.pl - Blokowanie użytkowników",
   "manifest_version": 2,
   "content_security_policy": "script-src 'self'; object-src 'self'",
-  "permissions": [
-    "activeTab"
-  ],
   "version": "1.0.71",
   "icons": {
     "32": "resources/logo_32x32.png",
