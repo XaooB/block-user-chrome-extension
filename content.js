@@ -53,7 +53,7 @@ function initApp() {
         }
         
         //Rearrange the list if user liked or unliked the comment
-        //We have to do that like this becase on each like/unline AJAX call is executed and reloads the comments
+        //We have to do that like this because on each like/unlike AJAX call is executed and reloads the comments
         if (message.likeUnlike) {
             let commentId = message.likeUnlike;
             rearangeCommentsOnLikeUnlike(commentId);
