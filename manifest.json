@@ -1,7 +1,9 @@
 {
   "name": "Realmadrid.pl - Blokowanie użytkowników",
-  "manifest_version": 2,
-  "content_security_policy": "script-src 'self'; object-src 'self'",
+  "manifest_version": 3,
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
   "version": "1.0.74",
   "icons": {
     "32": "resources/logo_32x32.png",
@@ -9,7 +11,7 @@
     "128": "resources/logo_128x128.png"
   },
   "description": "Aplikacja pozwala na blokowanie użytkowników na stronie Realmadryt.pl.",
-  "browser_action": {
+  "action": {
     "default_icon": "resources/logo_128x128.png",
     "default_popup": "popup.html",
     "default_title": "Zablokuj użytkownika na realmadryt.pl"
@@ -21,11 +23,16 @@
       "js": [ "injected.js", "content.js"]
     }
   ],
-  "web_accessible_resources": ["injected.js"],
+  "web_accessible_resources": [{
+    "resources": [
+      "injected.js"
+    ],
+    "matches": ["*://*.realmadryt.pl/*"]
+  }],
   "externally_connectable": {
     "matches": ["*://*.realmadryt.pl/news/*", "*://*.realmadryt.pl/cafe-bernabeu"]
   },
   "background": {
-    "scripts": ["background.js"]
+    "service_worker": "background.js"
   }
 }
