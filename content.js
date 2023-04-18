@@ -1,7 +1,7 @@
 const config = {
     messages: {
         userMarkedAsBlocked: 'Użytkownik został dodany do listy.',
-        userBlocked: 'Użytkownik znajduje się na liście zablokowanych.',
+        userBlocked: 'Użytkownik zablokowany.',
     },
     userType: {
         blocked: 'BLOCKED',
@@ -272,6 +272,9 @@ function hideComments(comments, users, deletedComments = 0, userToBeBlocked = ''
         if (userToBeBlocked && userToBeBlocked === commentUserName) {
             commentContent.style.display = 'none';
             commentContent.dataset.userType = config.userType.blocked;
+            article.querySelector('.user-comment__name').style.display = 'none';
+            article.querySelector('.c-comments__avatar').style.display = 'none';
+            article.querySelector('time').style.display = 'none';
             article.querySelector(config.selectors.customBlockButton).remove();
             createActionLink(config.labels.unblock, comments[i]);
             continue;
@@ -284,6 +287,9 @@ function hideComments(comments, users, deletedComments = 0, userToBeBlocked = ''
                 oldComment = comment.textContent.trim();
 
             comment.dataset.userType = config.userType.blocked;
+            article.querySelector('.user-comment__name').style.display = 'none';
+            article.querySelector('.c-comments__avatar').style.display = 'none';
+            article.querySelector('time').style.display = 'none';
             createActionLink(config.labels.unblock, comments[i], oldComment);
             deletedComments++;
         } else {
@@ -335,13 +341,17 @@ function unblockUser(event) {
         blockedUsers = getBlockedUsers(),
         userName = element.querySelector(config.selectors.userName).textContent.trim(),
         indexToDelete = blockedUsers.indexOf(userName),
-        comments = document.querySelectorAll(config.selectors.commentHolder);
+        comments = document.querySelectorAll(config.selectors.commentHolder),
+        article = comment.closest('article');
 
     blockedUsers.splice(indexToDelete, 1);
     saveBlockedUsers(blockedUsers.join());
 
     comment.dataset.userType = config.userType.unblocked;
     comment.setAttribute('style', '');
+    article.querySelector('.user-comment__name').style.display = 'block';
+    article.querySelector('.c-comments__avatar').style.display = 'block';
+    article.querySelector('time').style.display = 'block';
     resetComments(comments, userName);
 
     chrome.runtime.sendMessage({blockedAmount: getBlockedUsers().length > 0 ? getBlockedUsers().length.toString() : ''});
