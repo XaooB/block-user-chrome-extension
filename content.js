@@ -241,6 +241,9 @@ function resetComments(comments, unblockedUserName) {
         if (unblockedUserName === commentUserName) {
             commentContent.style.display = 'block';
             commentContent.dataset.userType = config.userType.unblocked;
+            article.querySelector('.user-comment__name').style.display = 'block';
+            article.querySelector('.c-comments__avatar').style.display = 'block';
+            article.querySelector('time').style.display = 'block';
             article.querySelector(config.selectors.customBlockButton).remove();
             createActionLink(config.labels.block, comments[i]);
         }
