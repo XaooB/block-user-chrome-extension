@@ -234,7 +234,13 @@ function insertAfter(newNode, refNode) {
 
 function resetComments(comments, unblockedUserName) {
     for (let i = 0; i < comments.length; i++) {
-        let commentUserName = comments[i].querySelector(config.selectors.userName).textContent.trim(),
+        let userName = comments[i].querySelector(config.selectors.userName);
+
+        if (!userName) {
+            continue;
+        }
+        
+        let commentUserName = userName.textContent.trim(),
             commentContent = comments[i].querySelector(config.selectors.commentText),
             article = comments[i].closest('article')
 
@@ -270,7 +276,7 @@ function hideComments(comments, users, deletedComments = 0, userToBeBlocked = ''
             continue;
         }
         
-        let commentUserName = comments[i].querySelector(config.selectors.userName).textContent.trim(),
+        let commentUserName = userName.textContent.trim(),
             commentContent = comments[i].querySelector(config.selectors.commentText),
             article = comments[i].closest('article');
 

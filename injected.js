@@ -24,7 +24,7 @@
                 if (this.responseType != 'blob' && this.responseText) {
                     try {
                         var allowedUrls = ['shoutbox.json', 'comments/latest.json'];
-                        var likeUnlikeUrls = ['like.json', 'unlike.json'];
+                        var triggerUrls = ['like.json', 'unlike.json', 'flag.json', 'unflag.json'];
                         var notAllowedUrls = ['edit.json', 'post.json']
                         var extensionID = 'pnifpkfbodeleimjekpahfgkgmncdphd';
 
@@ -32,7 +32,7 @@
                             chrome.runtime.sendMessage(extensionID, {stopInterception: true});
                         }
 
-                        if (new RegExp(likeUnlikeUrls.join("|")).test(this._url)) {
+                        if (new RegExp(triggerUrls.join("|")).test(this._url)) {
                             var response = JSON.parse(this.responseText),
                                 commentId = response.data.commentInfo.id;
                             
