@@ -26,7 +26,7 @@
                         var allowedUrls = ['shoutbox.json', 'comments/latest.json'];
                         var triggerUrls = ['like.json', 'unlike.json', 'flag.json', 'unflag.json'];
                         var notAllowedUrls = ['edit.json', 'post.json']
-                        var extensionID = 'pnifpkfbodeleimjekpahfgkgmncdphd';
+                        var extensionID = chrome.runtime.id || 'pnifpkfbodeleimjekpahfgkgmncdphd';
 
                         if (new RegExp(notAllowedUrls.join("|")).test(this._url)) {
                             chrome.runtime.sendMessage(extensionID, {stopInterception: true});

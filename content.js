@@ -56,12 +56,14 @@ function initApp() {
         //We have to do that like this because on each like/unlike AJAX call is executed and reloads the comments
         if (message.likeUnlike) {
             let commentId = message.likeUnlike;
+            cleanupComments(document.querySelectorAll(config.selectors.commentsBlocked));
             rearangeCommentsOnLikeUnlike(commentId);
             bindAnswerButton();
         }
 
         //Means that either edit or post was called
         if (message.interception && !config.global.stopInterception) {
+            cleanupComments(document.querySelectorAll(config.selectors.commentsBlocked));
             hideComments(commentsNodes, blockedUsers);
             bindArticleMoreButton();
             bindMoreButton();
@@ -259,18 +261,23 @@ function resetComments(comments, unblockedUserName) {
 function cleanupComments(comments) {
     comments.forEach(comment => {
         comment.parentNode.removeChild(comment.nextSibling)
-        comment.nextSibling.removeChild(comment.parentNode.querySelector(config.selectors.customBlockButton))
+        comment.closest('.user-comment__text').querySelector('.comments-action').removeChild(comment.parentNode.querySelector(config.selectors.customBlockButton))
         comment.dataset.userType = config.userType.unblocked;
         comment.setAttribute('style', '');
+        
+        comment.closest('.c-comments__box').querySelector('.user-comment__name').style.display = 'block';
+        comment.closest('.c-comments__box').querySelector('.c-comments__avatar').style.display = 'block';
+        comment.closest('.c-comments__box').querySelector('time').style.display = 'block';
     });
 }
 
 function hideComments(comments, users, deletedComments = 0, userToBeBlocked = '') {
     let loggedUser = document.querySelector(config.selectors.loggedUserName);
-    loggedUser = loggedUser ? loggedUser.textContent.trim() : '';
+    loggedUser = loggedUser ? loggedUser.textContent.trim() : ''
 
     for (let i = 0; i < comments.length; i++) {
-        let userName = comments[i].querySelector(config.selectors.userName);
+        let userName = comments[i].querySelector(config.selectors.userName),
+            customButtonExist = comments[i].querySelector(config.selectors.customBlockButton);
         
         if (!userName) {
             continue;
@@ -291,7 +298,7 @@ function hideComments(comments, users, deletedComments = 0, userToBeBlocked = ''
             article.querySelector('.c-comments__avatar').style.display = 'none';
             article.querySelector('time').style.display = 'none';
             article.querySelector(config.selectors.customBlockButton).remove();
-            createActionLink(config.labels.unblock, comments[i]);
+            createActionLink(config.labels.unblock, comments[i], null, customButtonExist);
             continue;
         } else if (userToBeBlocked) {
             continue;
@@ -305,17 +312,19 @@ function hideComments(comments, users, deletedComments = 0, userToBeBlocked = ''
             article.querySelector('.user-comment__name').style.display = 'none';
             article.querySelector('.c-comments__avatar').style.display = 'none';
             article.querySelector('time').style.display = 'none';
-            createActionLink(config.labels.unblock, comments[i], oldComment);
+            createActionLink(config.labels.unblock, comments[i], oldComment, customButtonExist);
             deletedComments++;
         } else {
-            createActionLink(config.labels.block, comments[i]);
+            createActionLink(config.labels.block, comments[i], null, customButtonExist);
         }
     }
-    
-    chrome.runtime.sendMessage({blockedAmount: getBlockedUsers().length > 0 ? getBlockedUsers().length.toString() : ''});
+
+    if(chrome.app && typeof chrome.app.isInstalled!=='undefined') {
+        chrome.runtime.sendMessage({blockedAmount: getBlockedUsers().length > 0 ? getBlockedUsers().length.toString() : ''});
+    }
 }
 
-function createActionLink(nodeName, holder, oldComment = null) {
+function createActionLink(nodeName, holder, oldComment = null, customButtonExist) {
     let anchor = document.createElement('a'),
         userName = holder.querySelector(config.selectors.userName).textContent.trim(),
         userType = holder.querySelector(config.selectors.commentText).dataset.userType,
@@ -368,20 +377,21 @@ function unblockUser(event) {
     article.querySelector('.c-comments__avatar').style.display = 'block';
     article.querySelector('time').style.display = 'block';
     resetComments(comments, userName);
-
+    
+    chrome.runtime.sendMessage(chrome.runtime.id, {interception: true});
     chrome.runtime.sendMessage({blockedAmount: getBlockedUsers().length > 0 ? getBlockedUsers().length.toString() : ''});
 }
 
 function blockUser(event) {
     let element = event.target.closest('article'),
         userName = element.querySelector(config.selectors.userName).textContent.trim(),
-        blockedUsers = getBlockedUsers(),
-        comments = document.querySelectorAll(config.selectors.commentHolder);
-
+        blockedUsers = getBlockedUsers();
+    
     blockedUsers.push(userName);
     let newList = [...new Set(blockedUsers)].join();
     saveBlockedUsers(newList);
-    hideComments(comments, [], 0, userName)
+    
+    chrome.runtime.sendMessage(chrome.runtime.id, {interception: true});
 }
 
 function getBlockedUsers() {

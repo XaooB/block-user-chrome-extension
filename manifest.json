@@ -11,6 +11,9 @@
     "128": "resources/logo_128x128.png"
   },
   "description": "Aplikacja pozwala na blokowanie użytkowników na stronie Realmadryt.pl.",
+  "permissions": [
+    "tabs"
+  ],
   "action": {
     "default_icon": "resources/logo_128x128.png",
     "default_popup": "popup.html",
