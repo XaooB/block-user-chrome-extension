@@ -27,7 +27,6 @@ const config = {
         customBlockButton: '.unblock-user',
     },
     global: {
-        stopInterception: false,
         initialLoad: true
     }
 }
@@ -49,11 +48,6 @@ function initApp() {
             isUserLogged = document.querySelector(config.selectors.loggedUserName),
             blockedUsers = getBlockedUsers();
         
-        //We need to stop intercepting AJAX calls if user sent new comment or edited the old one (edit.json/post.json)
-        if (message.stopInterception) {
-            config.global.stopInterception = true;
-        }
-        
         //Rearrange the list if user liked or unliked the comment
         //We have to do that like this because on each like/unlike AJAX call is executed and reloads the comments
         if (message.likeUnlike) {
@@ -65,7 +59,7 @@ function initApp() {
         }
 
         //Means that either edit or post was called
-        if (message.interception && !config.global.stopInterception) {
+        if (message.interception) {
             cleanupUnblockedComments(document.querySelectorAll(config.selectors.commentsUnblocked))
             cleanupBlockedComments(document.querySelectorAll(config.selectors.commentsBlocked));
             hideComments(commentsNodes, blockedUsers);
@@ -74,8 +68,6 @@ function initApp() {
             bindAnswerButton();
             config.global.initialLoad = false;
         } else if (message.interception) {
-            config.global.stopInterception = false;
-            
             //Clicking on Answer button on your own comment was breaking the list and Block/Unblock button was missing
             if (isUserLogged) {
                 bindAnswerButton();

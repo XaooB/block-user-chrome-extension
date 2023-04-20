@@ -1,14 +1,5 @@
 //Event listener for injected.js
 chrome.runtime.onMessageExternal.addListener(function (message, sender) {
-    if (message.stopInterception) {
-        chrome.tabs.query({}, function(tabs) {
-            tabs.forEach(function (tab) {
-                if (tab.url.match('https:\/\/.*.realmadryt.pl\/.*')) {
-                    chrome.tabs.sendMessage(tab.id, {stopInterception: true});
-                }
-            })
-        });
-    }
     if (message.interception) {
         chrome.tabs.query({}, function(tabs) {
             tabs.forEach(function (tab) {
@@ -32,15 +23,6 @@ chrome.runtime.onMessageExternal.addListener(function (message, sender) {
 
 //Event listener for content.js
 chrome.runtime.onMessage.addListener(function (message, sender) {
-    if (message.interception) {
-        chrome.tabs.query({}, function(tabs) {
-            tabs.forEach(function (tab) {
-                if (tab.url.match('https:\/\/.*.realmadryt.pl\/.*')) {
-                    chrome.tabs.sendMessage(tab.id, {interception: true});
-                }
-            });
-        });
-    }
     if (message.interception) {
         chrome.tabs.query({}, function(tabs) {
             tabs.forEach(function (tab) {
