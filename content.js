@@ -345,10 +345,8 @@ function hideComments(comments, users, deletedComments = 0, userToBeBlocked = ''
             createActionLink(config.labels.block, comments[i], null, customButtonExist);
         }
     }
-
-    if(chrome.app && typeof chrome.app.isInstalled!=='undefined') {
-        chrome.runtime.sendMessage({blockedAmount: getBlockedUsers().length > 0 ? getBlockedUsers().length.toString() : ''});
-    }
+    
+    chrome.runtime.sendMessage({blockedAmount: getBlockedUsers().length > 0 ? getBlockedUsers().length.toString() : ''});
 }
 
 function createActionLink(nodeName, holder, oldComment = null, customButtonExist) {
