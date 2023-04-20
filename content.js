@@ -45,13 +45,11 @@ function initApp() {
 
     chrome.runtime.onMessage.addListener(function (message, sender) {
         let commentsNodes = document.querySelectorAll(config.selectors.commentHolder),
-            isUserLogged = document.querySelector(config.selectors.loggedUserName),
             blockedUsers = getBlockedUsers();
         
         //Rearrange the list if user liked or unliked the comment
         //We have to do that like this because on each like/unlike AJAX call is executed and reloads the comments
         if (message.likeUnlike) {
-            let commentId = message.likeUnlike;
             cleanupBlockedComments(document.querySelectorAll(config.selectors.commentsBlocked));
             cleanupUnblockedComments(document.querySelectorAll(config.selectors.commentsUnblocked))
             hideComments(commentsNodes, blockedUsers);
@@ -67,12 +65,7 @@ function initApp() {
             bindMoreButton();
             bindAnswerButton();
             config.global.initialLoad = false;
-        } else if (message.interception) {
-            //Clicking on Answer button on your own comment was breaking the list and Block/Unblock button was missing
-            if (isUserLogged) {
-                bindAnswerButton();
-            }
-        }
+        } 
 
         //Reset the blocked users list
         if (message.reset) {
@@ -89,24 +82,6 @@ function initApp() {
     });
 
     bindMoreButton();
-}
-
-function rearangeCommentsOnLikeUnlike(commentId) {
-    let comment = document.querySelector('#comment' + commentId),
-        commentChilds = Array.from(comment.querySelectorAll(config.selectors.commentHolderLevel2)),
-        comments = [];
-
-    //If user liked/unliked expanded comment we need to add that to the rest of the comments (childs)
-    //to rearrange list again
-    if (commentChilds.length) {
-        commentChilds = [...commentChilds, comment];
-        comments = commentChilds;
-    } else {
-        comments = [comment];
-    }
-
-    cleanupUnblockedComments(comments, true);
-    hideComments(comments, getBlockedUsers());
 }
 
 function bindAnswerButton() {
