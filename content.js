@@ -19,6 +19,7 @@ const config = {
         commentText: '.comment-text',
         commentAction: '.comments-action',
         commentsBlocked: `[data-user-type="BLOCKED"]`,
+        commentsUnblocked: `.comment-text:not([data-user-type="BLOCKED"]):not(.comment-notice-message-copy)`,
         commentsMoreButton: '.c-comments__new-link:not(.fn-hidden)',
         commentsArticleMoreButton: '.c-comments__loadMore button',
         commentsAnswerButton: '.comments-action > :first-child',
@@ -27,6 +28,7 @@ const config = {
     },
     global: {
         stopInterception: false,
+        initialLoad: true
     }
 }
 
@@ -56,18 +58,21 @@ function initApp() {
         //We have to do that like this because on each like/unlike AJAX call is executed and reloads the comments
         if (message.likeUnlike) {
             let commentId = message.likeUnlike;
-            cleanupComments(document.querySelectorAll(config.selectors.commentsBlocked));
-            rearangeCommentsOnLikeUnlike(commentId);
+            cleanupBlockedComments(document.querySelectorAll(config.selectors.commentsBlocked));
+            cleanupUnblockedComments(document.querySelectorAll(config.selectors.commentsUnblocked))
+            hideComments(commentsNodes, blockedUsers);
             bindAnswerButton();
         }
 
         //Means that either edit or post was called
         if (message.interception && !config.global.stopInterception) {
-            cleanupComments(document.querySelectorAll(config.selectors.commentsBlocked));
+            cleanupUnblockedComments(document.querySelectorAll(config.selectors.commentsUnblocked))
+            cleanupBlockedComments(document.querySelectorAll(config.selectors.commentsBlocked));
             hideComments(commentsNodes, blockedUsers);
             bindArticleMoreButton();
             bindMoreButton();
             bindAnswerButton();
+            config.global.initialLoad = false;
         } else if (message.interception) {
             config.global.stopInterception = false;
             
@@ -85,8 +90,8 @@ function initApp() {
                     return el.closest(config.selectors.commentHolder)
                 }),
                 blockedUsers = getBlockedUsers();
-            
-            cleanupComments(blockedComments)
+
+            cleanupBlockedComments(blockedComments)
             hideComments(blockedCommentsHolder, blockedUsers);
         }
     });
@@ -108,6 +113,7 @@ function rearangeCommentsOnLikeUnlike(commentId) {
         comments = [comment];
     }
 
+    cleanupUnblockedComments(comments, true);
     hideComments(comments, getBlockedUsers());
 }
 
@@ -258,7 +264,7 @@ function resetComments(comments, unblockedUserName) {
     }
 }
 
-function cleanupComments(comments) {
+function cleanupBlockedComments(comments) {
     comments.forEach(comment => {
         comment.parentNode.removeChild(comment.nextSibling)
         comment.closest('.user-comment__text').querySelector('.comments-action').removeChild(comment.parentNode.querySelector(config.selectors.customBlockButton))
@@ -269,6 +275,27 @@ function cleanupComments(comments) {
         comment.closest('.c-comments__box').querySelector('.c-comments__avatar').style.display = 'block';
         comment.closest('.c-comments__box').querySelector('time').style.display = 'block';
     });
+}
+
+function cleanupUnblockedComments(comments, rearange = false) {
+    if (!config.global.initialLoad) {
+        comments.forEach(comment => {
+            if (!rearange) {
+                let customBtn = comment.nextSibling.querySelector(config.selectors.customBlockButton);
+                
+                if (customBtn) {
+                    comment.nextSibling.removeChild(customBtn)
+
+                }
+            } else {
+                let customBtn = comment.querySelector('.comments-action').querySelector(config.selectors.customBlockButton);
+                
+                if (customBtn) {
+                    comment.querySelector('.comments-action').removeChild(customBtn)
+                }
+            }
+        });
+    }
 }
 
 function hideComments(comments, users, deletedComments = 0, userToBeBlocked = '') {
