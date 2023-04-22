@@ -19,7 +19,7 @@ const config = {
         commentText: '.comment-text',
         commentAction: '.comments-action',
         commentsBlocked: `[data-user-type="BLOCKED"]`,
-        commentsUnblocked: `.comment-text:not([data-user-type="BLOCKED"]):not(.comment-notice-message-copy)`,
+        commentsUnblocked: `article:not(.sponsor-comment) .comment-text:not([data-user-type="BLOCKED"]):not(.comment-notice-message-copy)`,
         commentsMoreButton: '.c-comments__new-link:not(.fn-hidden)',
         commentsArticleMoreButton: '.c-comments__loadMore button',
         commentsAnswerButton: '.comments-action > :first-child',
@@ -244,22 +244,13 @@ function cleanupBlockedComments(comments) {
     });
 }
 
-function cleanupUnblockedComments(comments, rearange = false) {
+function cleanupUnblockedComments(comments) {
     if (!config.global.initialLoad) {
         comments.forEach(comment => {
-            if (!rearange) {
-                let customBtn = comment.nextSibling.querySelector(config.selectors.customBlockButton);
-                
-                if (customBtn) {
-                    comment.nextSibling.removeChild(customBtn)
-
-                }
-            } else {
-                let customBtn = comment.querySelector('.comments-action').querySelector(config.selectors.customBlockButton);
-                
-                if (customBtn) {
-                    comment.querySelector('.comments-action').removeChild(customBtn)
-                }
+            let customBtn = comment.nextSibling.querySelector(config.selectors.customBlockButton);
+            
+            if (customBtn) {
+                comment.nextSibling.removeChild(customBtn)
             }
         });
     }
