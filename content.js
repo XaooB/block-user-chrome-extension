@@ -303,8 +303,6 @@ function hideComments(comments, users, deletedComments = 0, userToBeBlocked = ''
             createActionLink(config.labels.block, comments[i], null, customButtonExist);
         }
     }
-    
-    chrome.runtime.sendMessage({blockedAmount: getBlockedUsers().length > 0 ? getBlockedUsers().length.toString() : ''});
 }
 
 function createActionLink(nodeName, holder, oldComment = null, customButtonExist) {
@@ -375,6 +373,7 @@ function blockUser(event) {
     saveBlockedUsers(newList);
     
     chrome.runtime.sendMessage(chrome.runtime.id, {interception: true});
+    chrome.runtime.sendMessage({blockedAmount: getBlockedUsers().length > 0 ? getBlockedUsers().length.toString() : ''});
 }
 
 function getBlockedUsers() {
