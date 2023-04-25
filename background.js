@@ -40,7 +40,9 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
             })
         });
     }
-    
-    chrome.action.setBadgeBackgroundColor({color: [238, 50, 78, 255]});
-    chrome.action.setBadgeText({text: message.blockedAmount});
+
+    if ('blockedAmount' in message) {
+        chrome.action.setBadgeBackgroundColor({color: [238, 50, 78, 255]});
+        chrome.action.setBadgeText({text: message.blockedAmount}); 
+    }
 });
