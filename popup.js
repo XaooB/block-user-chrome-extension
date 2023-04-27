@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
         chrome.tabs.query({}, function(tabs) {
             tabs.forEach(function (tab) {
                 if (tab.url.match('https:\/\/.*.realmadryt.pl\/.*')) {
-                    chrome.tabs.sendMessage(tabs[0].id, {reset: true});
+                    chrome.tabs.sendMessage(tab.id, {reset: true});
                 }
             })
         });
