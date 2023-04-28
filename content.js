@@ -24,6 +24,7 @@ const config = {
         commentsArticleMoreButton: '.c-comments__loadMore button',
         commentsAnswerButton: '.comments-action > :first-child',
         commentsLikeButton: '.c-comments__rating-container i',
+        commentsRatingButton: '.c-comments__rating-container',
         customBlockButton: '.unblock-user',
     },
     global: {
@@ -172,8 +173,12 @@ function hideCommentsOnExpand() {
 
     if (isExpanded) {
         let comments = article.querySelectorAll(config.selectors.commentHolder),
-            blockedUsers = getBlockedUsers();
-
+            blockedUsers = getBlockedUsers(),
+            unblockedComments = article.querySelectorAll(config.selectors.commentsUnblocked),
+            blockedComments = article.querySelectorAll(config.selectors.commentsBlocked);
+        
+        cleanupBlockedComments(blockedComments)
+        cleanupUnblockedComments(unblockedComments)
         hideComments(comments, blockedUsers)
         bindAnswerButton();
     }
@@ -241,6 +246,8 @@ function cleanupBlockedComments(comments) {
         comment.closest('.c-comments__box').querySelector('.user-comment__name').style.display = 'block';
         comment.closest('.c-comments__box').querySelector('.c-comments__avatar').style.display = 'block';
         comment.closest('.c-comments__box').querySelector('time').style.display = 'block';
+        comment.closest('.c-comments__box').querySelector('time').style.display = 'block';
+        comment.closest('.c-comments__box').querySelector(config.selectors.commentsRatingButton).style.display = 'block';
     });
 }
 
@@ -281,6 +288,7 @@ function hideComments(comments, users, deletedComments = 0, userToBeBlocked = ''
             commentContent.dataset.userType = config.userType.blocked;
             article.querySelector('.user-comment__name').style.display = 'none';
             article.querySelector('.c-comments__avatar').style.display = 'none';
+            article.querySelector(config.selectors.commentsRatingButton).style.display = 'none';
             article.querySelector('time').style.display = 'none';
             article.querySelector(config.selectors.customBlockButton).remove();
             createActionLink(config.labels.unblock, comments[i], null, customButtonExist);
@@ -297,6 +305,7 @@ function hideComments(comments, users, deletedComments = 0, userToBeBlocked = ''
             article.querySelector('.user-comment__name').style.display = 'none';
             article.querySelector('.c-comments__avatar').style.display = 'none';
             article.querySelector('time').style.display = 'none';
+            article.querySelector(config.selectors.commentsRatingButton).style.display = 'none';
             createActionLink(config.labels.unblock, comments[i], oldComment, customButtonExist);
             deletedComments++;
         } else {
@@ -357,6 +366,7 @@ function unblockUser(event) {
     article.querySelector('.user-comment__name').style.display = 'block';
     article.querySelector('.c-comments__avatar').style.display = 'block';
     article.querySelector('time').style.display = 'block';
+    article.querySelector(config.selectors.commentsRatingButton).style.display = 'block';
     resetComments(comments, userName);
     
     chrome.runtime.sendMessage(chrome.runtime.id, {interception: true});
