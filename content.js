@@ -173,6 +173,7 @@ function hideCommentsOnExpand() {
 
     if (isExpanded) {
         let comments = article.querySelectorAll(config.selectors.commentHolder),
+            parentComment = article.closest('.user-comment--firstCommentsVisible'),
             blockedUsers = getBlockedUsers(),
             unblockedComments = article.querySelectorAll(config.selectors.commentsUnblocked),
             blockedComments = article.querySelectorAll(config.selectors.commentsBlocked);
@@ -180,6 +181,7 @@ function hideCommentsOnExpand() {
         cleanupBlockedComments(blockedComments)
         cleanupUnblockedComments(unblockedComments)
         hideComments(comments, blockedUsers)
+        hideComments([parentComment], blockedUsers)
         bindAnswerButton();
     }
 }
