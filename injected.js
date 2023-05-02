@@ -1,5 +1,6 @@
 (function (XMLHttpRequest) {
     var XHR = XMLHttpRequest.prototype;
+    var extensionID = '';
 
     var open = XHR.open;
     var send = XHR.send;
@@ -25,7 +26,12 @@
                     try {
                         var allowedUrls = ['shoutbox.json', 'comments/latest.json'];
                         var triggerUrls = ['like.json', 'unlike.json', 'flag.json', 'unflag.json'];
-                        var extensionID = chrome.runtime.id || 'pnifpkfbodeleimjekpahfgkgmncdphd';
+                        var extensionSrc = document.querySelector('script.rmd-block-extension');
+                        
+                        if (extensionSrc) {
+                            extensionID = extensionSrc.id;
+                            extensionSrc.remove();
+                        }
                         
                         if (new RegExp(triggerUrls.join("|")).test(this._url)) {
                             var response = JSON.parse(this.responseText),
