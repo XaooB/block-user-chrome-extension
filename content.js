@@ -39,7 +39,6 @@ function initApp() {
     var script = document.createElement('script');
     script.src = chrome.runtime.getURL('injected.js');
     script.id = chrome.runtime.id;
-    script.classList.add('rmd-block-extension');
 
     (document.head || document.documentElement).appendChild(script);
 

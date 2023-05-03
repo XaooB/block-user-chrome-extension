@@ -1,6 +1,12 @@
 (function (XMLHttpRequest) {
     var XHR = XMLHttpRequest.prototype;
     var extensionID = '';
+    var script = document.currentScript;
+    
+    if (script) {
+        extensionID = script.id;
+        script.remove();
+    }
 
     var open = XHR.open;
     var send = XHR.send;
@@ -26,12 +32,6 @@
                     try {
                         var allowedUrls = ['shoutbox.json', 'comments/latest.json'];
                         var triggerUrls = ['like.json', 'unlike.json', 'flag.json', 'unflag.json'];
-                        var extensionSrc = document.querySelector('script.rmd-block-extension');
-                        
-                        if (extensionSrc) {
-                            extensionID = extensionSrc.id;
-                            extensionSrc.remove();
-                        }
                         
                         if (new RegExp(triggerUrls.join("|")).test(this._url)) {
                             var response = JSON.parse(this.responseText),
