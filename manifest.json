@@ -4,7 +4,7 @@
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self';"
   },
-  "version": "2.0.1",
+  "version": "2.0.2",
   "icons": {
     "32": "resources/logo_32x32.png",
     "64": "resources/logo_64x64.png",
