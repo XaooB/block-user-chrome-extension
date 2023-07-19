@@ -1,7 +1,7 @@
 const config = {
     messages: {
         userMarkedAsBlocked: 'Użytkownik został dodany do listy.',
-        userBlocked: 'Użytkownik zablokowany.',
+        userBlocked: 'Użytkownik zablokowany - ',
     },
     userType: {
         blocked: 'BLOCKED',
@@ -201,7 +201,7 @@ function createCommentNotice(originalNode) {
     div.classList.add('comment-text', 'comment-notice-message-copy');
     div.setAttribute(
         "style",
-        "color: #afafaf; font-size: 13px; padding: 4px 0;"
+        "color; font-size: 12px; padding: 4px 0;"
     );
 
     div.innerText = config.messages.userBlocked;
@@ -346,7 +346,19 @@ function createActionLink(nodeName, holder, oldComment = null, customButtonExist
         anchor.dataset.hiddenContent = oldComment;
     }
 
-    holder.querySelector(config.selectors.commentAction).append(anchor);
+    if (userType === config.userType.blocked) {
+        holder.querySelector('.comment-notice-message-copy').append(anchor);
+        holder.querySelector('.js-Comment-Action-Box').style.display = 'none';
+        holder.querySelector('.c-comments__box').style.paddingTop = "5px";
+        holder.querySelector('.c-comments__box').style.paddingBottom = "5px";
+        holder.querySelector('.c-comments__box').style.fontSize = "15px";
+    } else {
+        holder.querySelector(config.selectors.commentAction).append(anchor);
+        holder.querySelector('.js-Comment-Action-Box').style.display = 'block';
+        holder.querySelector('.c-comments__box').style.paddingTop = "";
+        holder.querySelector('.c-comments__box').style.paddingBottom = "";
+        holder.querySelector('.c-comments__box').style.fontSize = "";
+    }
 }
 
 function unblockUser(event) {
