@@ -239,7 +239,6 @@ function resetComments(comments, unblockedUserName) {
 function cleanupBlockedComments(comments) {
     comments.forEach(comment => {
         comment.parentNode.removeChild(comment.nextSibling)
-        comment.closest('.user-comment__text').querySelector('.comments-action').removeChild(comment.parentNode.querySelector(config.selectors.customBlockButton))
         comment.dataset.userType = config.userType.unblocked;
         comment.setAttribute('style', '');
         
